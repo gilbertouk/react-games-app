@@ -6,7 +6,7 @@ interface GameCardProps {
 
 const GameCard = ({ game }: GameCardProps) => {
   return (
-    <div className="movie-card">
+    <div className="game-card">
       <img
         src={game.background_image ? game.background_image : "no-poster.png"}
         alt={`${game.name} poster`}
