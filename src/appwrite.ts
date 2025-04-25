@@ -1,5 +1,12 @@
-import { Client, Databases, ID, Query } from "appwrite";
+import { Client, Databases, ID, Query, Models } from "appwrite";
 import { Game } from "./types/api-response";
+
+export interface TrendingGame extends Models.Document {
+  count: number;
+  game_id: number;
+  poster_url: string;
+  searchTerm: "taken";
+}
 
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID;
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
@@ -11,17 +18,6 @@ const client = new Client()
   .setProject(PROJECT_ID);
 
 const database = new Databases(client);
-
-console.log(
-  "PROJECT_ID:",
-  PROJECT_ID,
-  "DATABASE_ID",
-  DATABASE_ID,
-  "COLLECTION_ID",
-  COLLECTION_ID,
-  "APPWRITE_ENDPOINT",
-  APPWRITE_ENDPOINT
-);
 
 export const updateSearchCount = async (searchTerm: string, game: Game) => {
   // 1.Use Appwrite SDK to check if the search term already exists
@@ -54,7 +50,9 @@ export const updateSearchCount = async (searchTerm: string, game: Game) => {
   }
 };
 
-export const getTrendingGames = async () => {
+export const getTrendingGames = async (): Promise<
+  Models.Document[] | undefined
+> => {
   try {
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.orderDesc("count"),
